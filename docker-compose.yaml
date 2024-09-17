@@ -1,0 +1,13 @@
+services:
+  vidgenapi:
+    image: guestros/video-generation-api:latest
+    build: .
+    platform: linux/amd64
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env # PIXABAY_API_KEY
+    volumes:
+      - ./src/output:/app/output
+      - ./src/workdir:/app/workdir
+      - ./src/videos:/app/videos

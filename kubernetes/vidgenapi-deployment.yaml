@@ -1,0 +1,82 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: vidgenapi
+  name: vidgenapi
+  namespace: video-creator
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: vidgenapi
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: vidgenapi
+    spec:
+      containers:
+        - env:
+            - name: PIXABAY_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  key: PIXABAY_API_KEY
+                  name: pixabay-secret
+          image: guestros/video-generation-api:latest
+          imagePullPolicy: Always
+          name: vidgenapi
+          ports:
+            - containerPort: 8000
+              protocol: TCP
+          volumeMounts:
+            - mountPath: /app/output
+              name: vidgenapi-output
+            - mountPath: /app/workdir
+              name: vidgenapi-workdir
+            - mountPath: /app/videos
+              name: vidgenapi-videos
+          resources:
+            limits:
+              cpu: 2
+              memory: 2Gi
+            requests:
+              cpu: 500m
+              memory: 500Mi
+      restartPolicy: Always
+      volumes:
+        # this one contains the final videos
+        - name: vidgenapi-output
+          persistentVolumeClaim:
+            claimName: vidgenapi-output
+        - name: vidgenapi-workdir
+          emptyDir: {}
+        # this one should be cached to avoid loading from pixabay too often, but not required
+        - name: vidgenapi-videos
+          persistentVolumeClaim:
+            claimName: vidgenapi-videos
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: vidgenapi-output
+  namespace: video-creator
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 2Gi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: vidgenapi-videos
+  namespace: video-creator
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 2Gi
