@@ -1,8 +1,11 @@
+[![ci](https://github.com/JustinGuese/docker-video-audio-generator-api/actions/workflows/main.yml/badge.svg)](https://github.com/JustinGuese/docker-video-audio-generator-api/actions/workflows/main.yml)
+
 Similar to https://github.com/harry0703/MoneyPrinterTurbo/blob/main/README-en.md, I want to generate a Video with subtitles and voiceover given a script. 
 
 Example Result:
 
 ![example video](docs/ApnJY3tXITXxQg.mp4)
+[example video](docs/ApnJY3tXITXxQg.mp4)
 
 MoneyPrinterTurbo did some things inefficiently, so I want to improve upon it.
 
@@ -15,6 +18,8 @@ copy the [.env.example](.env.example) to .env and fill in the PIXABAY_API_KEY. y
 ### docker
 
 `docker-compose up`
+
+image: https://hub.docker.com/repository/docker/guestros/video-generation-api/
 
 ### local python
 
